@@ -7,7 +7,7 @@ experimenting with unique twists to further strengthen (?) its cryptographic pro
 This project will serve as mostly a learning exercise in cryptography and Rust, as well as a foundation for developing advanced encryption tools.
 
 ## Todos
-- [ ] Implement finite field class
+- [X] Implement finite field class
 - [ ] Implement matrix class
 - [ ] Implement (efficient) matrix multiplication
 - [ ] Implement class and method for converting a string to a block
