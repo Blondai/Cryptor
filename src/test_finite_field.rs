@@ -1,23 +1,24 @@
+use crate::utils::print_dash;
 use crate::finite_field::FiniteField;
 
 
 pub fn test_finite_field() {
     test_xor();
-    println!("--------------------");
+    print_dash(20);
     test_addition();
-    println!("--------------------");
+    print_dash(20);
     test_negation();
-    println!("--------------------");
+    print_dash(20);
     test_subtraction();
-    println!("--------------------");
+    print_dash(20);
     test_multiplication();
-    println!("--------------------");
+    print_dash(20);
     test_inversion();
-    println!("--------------------");
+    print_dash(20);
     test_division();
-    println!("--------------------");
+     print_dash(20);
     test_equation_1();
-    println!("--------------------");
+    print_dash(20);
     test_equation_2();
 }
 

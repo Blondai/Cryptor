@@ -20,8 +20,7 @@ impl BitXor for FiniteField {
 
     fn bitxor(self, other: FiniteField) -> FiniteField {
         let value: u8 = self.value ^ other.value;
-        let finite_field: FiniteField = FiniteField { value };
-        return finite_field
+        FiniteField { value }
     }
 }
 
@@ -32,8 +31,7 @@ impl Add for FiniteField {
     fn add(self, other: FiniteField) -> FiniteField {
         let sum: u16 = self.value as u16 + other.value as u16;
         let value: u8 = (sum % 256u16) as u8;
-        let finite_field: FiniteField = FiniteField { value };
-        return finite_field
+        FiniteField { value }
     }
 }
 
@@ -53,8 +51,7 @@ impl Sub for FiniteField {
     type Output = FiniteField;
 
     fn sub(self, other: FiniteField) -> FiniteField {
-        let finite_field: FiniteField = self + (- other);
-        return finite_field
+        self + (- other)
     }
 }
 
@@ -65,8 +62,7 @@ impl Mul for FiniteField {
     fn mul(self, other: FiniteField) -> FiniteField {
         let product: u16 = self.value as u16 * other.value as u16;
         let value: u8 = (product % 256u16) as u8;
-        let finite_field: FiniteField = FiniteField { value };
-        return finite_field
+        FiniteField { value }
     }
 }
 
@@ -89,16 +85,14 @@ impl Div for FiniteField {
 
     fn div(self, other: FiniteField) -> Option<FiniteField> {
         let inverse: FiniteField = other.inverse()?;
-        let quotient: FiniteField = self * inverse;
-        return Some(quotient)
+        return Some(self * inverse)
     }
 }
 
 // Equality
 impl PartialEq for FiniteField {
     fn eq(&self, other: &FiniteField) -> bool {
-        let boolean: bool = self.value == other.value;
-        return boolean
+        self.value == other.value
     }
 }
 
