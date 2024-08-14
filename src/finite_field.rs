@@ -98,7 +98,7 @@ impl PartialEq for FiniteField {
 
 // Byte vector
 impl FiniteField {
-    fn to_byte_vector(&self) -> Vec<u8> {
+    pub fn to_byte_vector(&self) -> Vec<u8> {
         let vector: Vec<u8> = vec![(self.value >> 7) & 1,
                                    (self.value >> 6) & 1,
                                    (self.value >> 5) & 1,

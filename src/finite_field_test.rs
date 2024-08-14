@@ -27,8 +27,8 @@ fn test_xor() {
     println!("a = {}", a.byte_vector_string());
     let b: FiniteField = FiniteField::new(0b01011001);
     println!("b = {}", b.byte_vector_string());
-    let sum: FiniteField = a ^ b;
-    println!("a ^ b = {}", sum.byte_vector_string())
+    let xor: FiniteField = a ^ b;
+    println!("a ^ b = {}", xor.byte_vector_string())
 }
 
 fn test_addition() {
