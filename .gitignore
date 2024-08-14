@@ -2,5 +2,7 @@
 /target
 /.idea
 /.old
+/src/test
+/.backup
 
 # Files
