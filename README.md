@@ -8,13 +8,16 @@ This project will serve as mostly a learning exercise in cryptography and Rust, 
 
 ## Todos
 - [X] Implement finite field class
-- [ ] Implement matrix class
-- [ ] Implement (efficient) matrix multiplication
+- ~~[ ] Implement matrix class~~
+- ~~[ ] Implement (efficient) matrix multiplication~~
 - [ ] Implement class and method for converting a string to a block
-- [ ] Implement round key generation
+- [X] Implement round key generation
+- [ ] Fix the bug involving mix_columns
+- [ ] Implement an input system for user input
+- [ ] Add support and generation for initialization vector
 
 
-- [ ] `AddRoundKey`
-- [ ] `SubBytes`
-- [ ] `ShiftRows`
+- [X] `AddRoundKey`
+- [X] `SubBytes`
+- [X] `ShiftRows`
 - [ ] `MixColumns`
