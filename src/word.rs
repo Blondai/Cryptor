@@ -1,8 +1,8 @@
-use std::ops::{BitXor, Index, IndexMut};
-use rand::Rng;
-
 use crate::finite_field::FiniteField;
 use crate::utils::{s_box, s_box_inv};
+use rand::rngs::ThreadRng;
+use rand::Rng;
+use std::ops::{BitXor, Index, IndexMut};
 
 #[derive(Copy, Clone)]
 pub struct Word {
@@ -56,13 +56,13 @@ impl Word {
 
 // Shift Word
 impl Word {
-    pub fn shift_word(self) -> Word {
+    pub fn shift_word(&mut self) {
         let mut new_values: [u8; 4] = [0u8; 4];
         new_values[0] = self.values[1];
         new_values[1] = self.values[2];
         new_values[2] = self.values[3];
         new_values[3] = self.values[0];
-        Word::new(new_values)
+        self.values = new_values
     }
 }
 
@@ -84,7 +84,7 @@ impl Word {
             new_values0.value,
             new_values1.value,
             new_values2.value,
-            new_values3.value
+            new_values3.value,
         ];
         self.values = new_values
     }
@@ -111,15 +111,19 @@ impl Word {
         let self2: FiniteField = FiniteField::new(self[2]);
         let self3: FiniteField = FiniteField::new(self[3]);
 
-        let new_values0: FiniteField = (ZERO_E * self0) ^ (ZERO_B * self1) ^ (ZERO_D * self2) ^ (NINE * self3);
-        let new_values1: FiniteField = (NINE * self0) ^ (ZERO_E * self1) ^ (ZERO_B * self2) ^ (ZERO_D * self3);
-        let new_values2: FiniteField = (ZERO_D * self0) ^ (NINE * self1) ^ (ZERO_E * self2) ^ (ZERO_B * self3);
-        let new_values3: FiniteField = (ZERO_B * self0) ^ (ZERO_D * self1) ^ (NINE * self2) ^ (ZERO_E * self3);
+        let new_values0: FiniteField =
+            (ZERO_E * self0) ^ (ZERO_B * self1) ^ (ZERO_D * self2) ^ (NINE * self3);
+        let new_values1: FiniteField =
+            (NINE * self0) ^ (ZERO_E * self1) ^ (ZERO_B * self2) ^ (ZERO_D * self3);
+        let new_values2: FiniteField =
+            (ZERO_D * self0) ^ (NINE * self1) ^ (ZERO_E * self2) ^ (ZERO_B * self3);
+        let new_values3: FiniteField =
+            (ZERO_B * self0) ^ (ZERO_D * self1) ^ (NINE * self2) ^ (ZERO_E * self3);
         let new_values: [u8; 4] = [
             new_values0.value,
             new_values1.value,
             new_values2.value,
-            new_values3.value
+            new_values3.value,
         ];
         self.values = new_values
     }
@@ -135,13 +139,17 @@ impl Word {
 // Random Word
 impl Word {
     pub fn random() -> Word {
-        let mut rng = rand::thread_rng();
-    Word::new([
-        rng.random(),
-        rng.random(),
-        rng.random(),
-        rng.random(),
-    ])
+        let mut rng: ThreadRng = rand::thread_rng();
+        let bit_0: u8 = rng.gen();
+        let bit_1: u8 = rng.gen();
+        let bit_2: u8 = rng.gen();
+        let bit_3: u8 = rng.gen();
+        Word::new([
+            bit_0,
+            bit_1,
+            bit_2,
+            bit_3
+        ])
     }
 }
 
@@ -156,6 +164,20 @@ impl Word {
                 string += ", "
             } else if index == self.values.len() - 1 {
                 string += "]"
+            }
+        }
+        string
+    }
+}
+
+// Hexadecimal Representation
+impl Word {
+    pub fn hexadecimal_representation(&self) -> String {
+        let mut string: String = String::new();
+        for index in 0..self.values.len() {
+            string += &*format!("{:02x}", self.values[index]);
+            if index < self.values.len() - 1 {
+                string += " "
             }
         }
         string

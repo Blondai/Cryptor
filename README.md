@@ -12,7 +12,7 @@ This project will serve as mostly a learning exercise in cryptography and Rust, 
 - ~~[ ] Implement (efficient) matrix multiplication~~
 - [ ] Implement class and method for converting a string to a block
 - [X] Implement round key generation
-- [ ] Fix the bug involving mix_columns
+- [X] Fix the bug involving mix_columns
 - [ ] Implement an input system for user input
 - [ ] Add support and generation for initialization vector
 
@@ -20,4 +20,4 @@ This project will serve as mostly a learning exercise in cryptography and Rust, 
 - [X] `AddRoundKey`
 - [X] `SubBytes`
 - [X] `ShiftRows`
-- [ ] `MixColumns`
+- [X] `MixColumns`

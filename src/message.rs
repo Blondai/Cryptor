@@ -27,7 +27,7 @@ impl Message {
         for round in 1u8..14u8 {
             self.substitute_bytes();
             self.shift_rows();
-            // self.mix_columns();
+            self.mix_columns();
             self.add_round_key(round)
         }
 
@@ -37,22 +37,37 @@ impl Message {
     }
 }
 
-// Decryption
+// Decrypt
 impl Message {
     pub fn decrypt(&mut self) {
+        self.add_round_key(14u8);
+        self.inv_substitute_bytes();
+        self.inv_shift_rows();
+
+        for round in (1u8..14u8).rev() {
+            self.add_round_key(round);
+            self.inv_mix_columns();
+            self.inv_substitute_bytes();
+            self.inv_shift_rows();
+        }
+
+        self.add_round_key(0u8);
+    }
+
+    /*  pub fn decrypt_old(&mut self) {
         self.add_round_key(14u8);
 
         for round in (1u8..14u8).rev() {
             self.inv_shift_rows();
             self.inv_substitute_bytes();
             self.add_round_key(round);
-            // self.inv_mix_columns();
+            self.inv_mix_columns();
         }
 
         self.inv_shift_rows();
         self.inv_substitute_bytes();
         self.add_round_key(0u8);
-    }
+    }*/
 }
 
 // Add Round Key
@@ -80,39 +95,38 @@ impl Message {
 // Shift Rows
 impl Message {
     pub fn shift_rows(&mut self) {
-        let mut new_message: [Word; 4] = [Word::empty(); 4];
-
-        new_message[0] = self.message[0];
-
-        new_message[1] = self.message[1].shift_word();
-
-        new_message[2] = self.message[2].shift_word().shift_word();
-
-        new_message[3] = self.message[3].shift_word().shift_word().shift_word();
-
-        self.message = new_message
+        let mut row_0: Word = Word::empty();
+        let mut row_1: Word = Word::empty();
+        let mut row_2: Word = Word::empty();
+        let mut row_3: Word = Word::empty();
+        for index in 0..4usize {
+            row_0[index] = self.message[index][0];
+            row_1[index] = self.message[index][1];
+            row_2[index] = self.message[index][2];
+            row_3[index] = self.message[index][3];
+        }
+        row_1.shift_word();
+        row_2.shift_word();
+        row_2.shift_word();
+        row_3.shift_word();
+        row_3.shift_word();
+        row_3.shift_word();
+        for index in 0..4usize {
+            self.message[index][0] = row_0[index];
+            self.message[index][1] = row_1[index];
+            self.message[index][2] = row_2[index];
+            self.message[index][3] = row_3[index]
+        }
     }
 }
 
 // Mix Columns
 impl Message {
     pub fn mix_columns(&mut self) {
-        let mut new_message: [Word; 4] = [Word::empty(); 4];
-        for index in 0..4 {
-            let index: usize = index as usize;
-            let mut column: Word = Word::new([
-                self.message[0][index],
-                self.message[1][index],
-                self.message[2][index],
-                self.message[3][index],
-            ]);
-            column.mix_column();
-            for jndex in 0..4 {
-                let jndex: usize = jndex as usize;
-                new_message[jndex][index] = column[jndex];
-            }
-        }
-        self.message = new_message;
+        self.message[0].mix_column();
+        self.message[1].mix_column();
+        self.message[2].mix_column();
+        self.message[3].mix_column();
     }
 }
 
@@ -128,38 +142,51 @@ impl Message {
 // Inverse Shift Rows
 impl Message {
     pub fn inv_shift_rows(&mut self) {
-        let mut new_message: [Word; 4] = [Word::empty(); 4];
-
-        new_message[0] = self.message[0];
-
-        new_message[1] = self.message[1].shift_word().shift_word().shift_word();
-
-        new_message[2] = self.message[2].shift_word().shift_word();
-
-        new_message[3] = self.message[3].shift_word();
-
-        self.message = new_message
+        let mut row_0: Word = Word::empty();
+        let mut row_1: Word = Word::empty();
+        let mut row_2: Word = Word::empty();
+        let mut row_3: Word = Word::empty();
+        for index in 0..4usize {
+            row_0[index] = self.message[index][0];
+            row_1[index] = self.message[index][1];
+            row_2[index] = self.message[index][2];
+            row_3[index] = self.message[index][3];
+        }
+        row_1.shift_word();
+        row_1.shift_word();
+        row_1.shift_word();
+        row_2.shift_word();
+        row_2.shift_word();
+        row_3.shift_word();
+        for index in 0..4usize {
+            self.message[index][0] = row_0[index];
+            self.message[index][1] = row_1[index];
+            self.message[index][2] = row_2[index];
+            self.message[index][3] = row_3[index]
+        }
     }
 }
 
 // Inverse Mix Columns
 impl Message {
     pub fn inv_mix_columns(&mut self) {
-        let mut new_message: [Word; 4] = [Word::empty(); 4];
-        for index in 0..4 {
-            let index: usize = index as usize;
-            let mut column: Word = Word::new([
-                self.message[0][index],
-                self.message[1][index],
-                self.message[2][index],
-                self.message[3][index],
-            ]);
-            column.inv_mix_column();
-            for jndex in 0..4 {
-                let jndex: usize = jndex as usize;
-                new_message[jndex][index] = column[jndex];
-            }
-        }
-        self.message = new_message;
+        self.message[0].inv_mix_column();
+        self.message[1].inv_mix_column();
+        self.message[2].inv_mix_column();
+        self.message[3].inv_mix_column();
+    }
+}
+
+// Random Message
+impl Message {
+    pub fn random() -> Message {
+        let key: Key = Key::random();
+        let text: [Word; 4] = [
+            Word::random(),
+            Word::random(),
+            Word::random(),
+            Word::random(),
+        ];
+        Message::new(text, key)
     }
 }

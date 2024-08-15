@@ -19,19 +19,17 @@ impl Key {
         const R: usize = 15usize;
         let initial_key: [Word; N] = self.initial_key;
         let mut expanded_words: [Word; 4 * R] = [Word::empty(); 4 * R];
-        for index in 0..4 * R {
-            if index < N {
-                expanded_words[index] = initial_key[index]
-            } else if index >= N && index % N == 0 {
-                expanded_words[index] = expanded_words[index - N]
-                    ^ substitute_word(rotate_word(expanded_words[index - 1]))
-                    ^ get_round_constant(index / N)
-            } else if index >= N && N > 6 && index % N == 4 {
-                expanded_words[index] =
-                    expanded_words[index - N] ^ substitute_word(expanded_words[index - 1])
-            } else {
-                expanded_words[index] = expanded_words[index - N] ^ expanded_words[index - 1]
+        for index in 0..N {
+            expanded_words[index] = initial_key[index]
+        }
+        for index in N..4 * R {
+            let mut temp = expanded_words[index - 1];
+            if index % N == 0 {
+                temp = substitute_word(rotate_word(temp)) ^ get_round_constant(index / N)
+            } else if N > 6 && index % N == 4 {
+                temp = substitute_word(temp)
             }
+            expanded_words[index] = expanded_words[index - N] ^ temp;
         }
         expanded_words
     }
